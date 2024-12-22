@@ -1,64 +1,103 @@
-# LDF Abstract Syntax Tree
+# LDF Abstract Syntax Tree builder
+# At this moment, decided, that iteration char is semicolon ";" not ","
+# Like for me very comfortable to hit semicolon but not seeking comma char
 #
 # Definitions of basic syntax elements
 # Example of expected markup
 # app=(
-#   name="App";
-#   version=1;
+#   name="App" # nolint
+#   version=1  # nolint
 #   keys=[
-#     "--usessl"; 
-#     "--cert"; 
-#     "/home/suse/db.crt"
-#   ];
+#     "--usessl"
+#     "--cert"
+#     "/home/suse/db.crt" # nolint
+#   ]
 #   rules=[
-#     (type="passwordRequired"; value=false);
-#   ];
-# );
+#     (type="passwordRequired" value=false);
+#   ]
+# )
 
-obj_node <- function(properties = list()) {
-  structure(list(type = "object", properties = properties), class = "obj_node")
+set_node <<- function(properties = list()) {
+  structure(
+    list(
+      type = "set",
+      properties = properties
+    ),
+    class = "set_node"
+  )
 }
 
-list_node <- function(elements = list()) {
-  structure(list(type = "array", elements = elements), class = "list_node")
+list_node <<- function(elements = list()) {
+  structure(
+    list(
+      type = "array", 
+      elements = elements
+    ),
+    class = "list_node"
+  )
 }
 
-str_node <- function(value) {
-  structure(list(type = "string", value = value), class = "str_node")
+str_node <<- function(value) {
+  structure(
+    list(
+      type = "string",
+      value = value
+    ),
+    class = "str_node"
+  )
 }
 
-int_node <- function(value) {
-  structure(list(type = "number", value = value), class = "int_node")
+int_node <<- function(value) {
+  structure(
+    list(
+      type = "number",
+      value = value
+    ),
+    class = "int_node"
+  )
 }
 
-bool_node <- function(value) {
-  structure(list(type = "boolean", value = value), class = "bool_node")
+bool_node <<- function(value) {
+  structure(
+    list(
+      type = "boolean",
+      value = value
+    ),
+    class = "bool_node"
+  )
 }
 
-null_node <- function() {
-  structure(list(type = "null"), class = "null_node")
+null_node <<- function() {
+  structure(
+    list(
+      type = "null"
+    ),
+    class = "null_node"
+  )
 }
 
-prop_node <- function(key, value) {
-  structure(list(
-                 type = "property",
-                 key = key, value = value),
-  class = "prop_node")
+prop_node <<- function(key, value) {
+  structure(
+    list(
+      type = "property",
+      key = key,
+      value = value
+    ),
+    class = "prop_node"
+  )
 }
 
 # Struct of specified chars (ex "*")
-any_node <- function() {
-  structure(list(type = "any"), class = "any_node")
+any_node <<- function() {
+  structure(
+    list(type = "any"),
+    class = "any_node"
+  )
 }
 
-
-# test
-my_object <- obj_node(properties = list(
-  prop_node(key = "name", value = str_node("John")),
-  prop_node(key = "age", value = int_node(30)),
-  prop_node(key = "is_active", value = bool_node(TRUE)),
-  prop_node(key = "address", value = null_node())
-)
-)
-
-print(my_object)
+comment_node <<- function() {
+  structure(
+    list(type = "comment"),
+    class = "comment"
+  )
+}

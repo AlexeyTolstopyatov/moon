@@ -1,16 +1,20 @@
 # Here is will be tests of all projects parts
 source("lexer.R")
+source("parser.R")
 
 ldft <- 'app=(
-   # объект
-   user="admin";
-   password="admin";
-   keys=["--usessl";"--cert";"mycert.crt";];
+   # Applications configuration
+   user="admin"
+   password="admin"
+   keys=["--usessl"; "--cert"; "mycert.crt"]
    settings=(
-      debug=true;
-      log_level="info";
-      allowed_users = *;
+      debug=true
+      log_level="info"
+      allowed_users="*"
    )
 )'
 
-print(tokenize(ldft))
+tokens <- tokenizeldf(ldft)
+result <- parseldf(tokens)
+
+print(result)

@@ -3,7 +3,7 @@ source("ast.R")
 # nolint: spaces_left_parentheses_linter.
 # nolint: line_length_linter.
 
-tokenize <- function(text) {
+tokenizeldf <- function(text) {
   tokens <- list()
   pos <- 1
 
@@ -34,6 +34,18 @@ tokenize <- function(text) {
       value <- substr(text, start, pos - 1)
       tokens <- append(tokens, list(list(type = "string", value = value)))
       pos <- pos + 1
+    } else if (char == "#") {
+      # Handle comments
+      pos <- pos + 1
+      start <- pos
+      while (pos <= nchar(text)) {
+        if (substr(text, pos, pos) == "\n") {
+          break
+        }
+        pos <- pos + 1
+      }
+      value <- substr(text, start, pos - 1)
+      tokens <- append(tokens, list(list(type = "comment", value = value)))
     } else if (grepl("^[0-9.-]+$", char)) {
       # Handle numbers
       start <- pos
@@ -56,15 +68,22 @@ tokenize <- function(text) {
     } else if (char == "=") {
       tokens <- append(tokens, list(list(type = "colon", value = char)))
       pos <- pos + 1
-    } else if (grepl("^[,]$", char)) {
+    } else if (grepl("^[;]$", char)) {
       tokens <- append(tokens, list(list(type = "comma", value = char)))
       pos <- pos + 1
-    } else if (!grepl("^\\s*$", char)) {
-      # ignore whitespaces
-      stop(paste0("Invalid character: ", char))
+      #   } else if (grepl("^\\s$", char)) {
+      #     # ignore whitespaces
+      #     stop(paste0("Invalid character: ", char))
+      #   } else {
+      #     pos <- pos + 1
+      #   }
+      # }
+    } else if (grepl("^\\s$", char)) {
+        pos <- pos + 1
     } else {
-      pos <- pos + 1
+      stop(paste0("Invalid character: ", char))
     }
   }
+
   tokens
 }
